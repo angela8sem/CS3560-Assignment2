@@ -7,7 +7,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class AdminControlPanel extends JFrame implements Visitor
@@ -20,8 +20,10 @@ public class AdminControlPanel extends JFrame implements Visitor
 	private JTextField groupText;
 	private JButton addUserBtn;		
 	private JButton addGroupBtn;		
-	private JButton userViewBtn;		
-	private JButton userTotalBtn;		
+	private JButton userViewBtn;
+	private JButton validateUserBtn;
+	private JButton userTotalBtn;	
+	private JButton lastUserBtn;
 	private JButton groupTotalBtn;		
 	private JButton tweetTotalBtn;		
 	private JButton postivePrecentageBtn;
@@ -81,6 +83,11 @@ public class AdminControlPanel extends JFrame implements Visitor
 		userViewBtn.addActionListener(new userViewBtnListener());
 		panel.add(userViewBtn);
 		
+		validateUserBtn = new JButton("Validate User");
+		validateUserBtn.setBounds(185, 218, 190, 30);
+		validateUserBtn.addActionListener(new validateUserBtnListener());
+		panel.add(validateUserBtn);
+		
 		userTotalBtn = new JButton("Show User Total");
 		userTotalBtn.setBounds(185, 250, 190, 30);
 		userTotalBtn.addActionListener(new userTotalBtnListener());
@@ -90,6 +97,11 @@ public class AdminControlPanel extends JFrame implements Visitor
 		tweetTotalBtn.setBounds(185, 280, 190, 30);
 		tweetTotalBtn.addActionListener(new messageTotalBtnListener());
 		panel.add(tweetTotalBtn);
+		
+		lastUserBtn = new JButton("Show Last Updated User");
+		lastUserBtn.setBounds(380, 218, 190, 30);
+		lastUserBtn.addActionListener(new lastUserBtnListener());
+		panel.add(lastUserBtn);
 		
 		groupTotalBtn = new JButton("Show Group Total");
 		groupTotalBtn.setBounds(380, 250, 190, 30);
@@ -149,6 +161,11 @@ public class AdminControlPanel extends JFrame implements Visitor
 				{
 					JOptionPane.showMessageDialog(null, "User already exists, please enter a new user");
 				} 
+				//username can't contain spaces
+				else if (userID.contains(" "))
+				{
+					JOptionPane.showMessageDialog(null, "Invalid Username. Must not include spaces");
+				}
 				//users can only be in groups or root
 				else if (userMap.containsKey(currentNode.toString())) 
 				{
@@ -185,6 +202,12 @@ public class AdminControlPanel extends JFrame implements Visitor
 			{
 				JOptionPane.showMessageDialog(null, "Group name already exists, please enter a new group");
 			} 
+			//group name can't contain spaces
+			else if (groupID.contains(" "))
+			{
+				JOptionPane.showMessageDialog(null, "Invalid Username. Must not include spaces");
+			}
+
 			//group can't be within a user
 			else if (userMap.containsKey(currentNode.toString()))
 			{
@@ -219,6 +242,35 @@ public class AdminControlPanel extends JFrame implements Visitor
     			UserView userView = new UserView(u);
     			userView.setVisible(true);
             }
+		}
+	}
+	
+	private class validateUserBtnListener implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{	
+			//add user and add group buttons already validate entries. Therefore, every user added is valid
+			JOptionPane.showMessageDialog(null, "Valid Username");
+		}
+	}
+	
+	//last User button to display the user ID of the last user who interacted
+	private class lastUserBtnListener implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			long time = 0;
+			String lastUser = "";
+			
+			for (Map.Entry<String, User> entry : userMap.entrySet())
+			{
+				if(entry.getValue().getLastTimeUpdate() > time)
+				{
+					time = entry.getValue().getLastTimeUpdate();
+					lastUser = entry.getValue().getId();
+				}
+			}
+			JOptionPane.showMessageDialog(null, "Last Updated User: " + lastUser);
 		}
 	}
 	

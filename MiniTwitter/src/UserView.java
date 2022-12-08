@@ -19,6 +19,7 @@ public class UserView extends JFrame implements Observable
 	private JButton postTweetButton;
 	private JLabel followingLabel;
 	private JLabel newsfeedLabel;
+	private JLabel creationTime;
 	private ArrayList<String> followingIdList;
 	private List<String> newsfeed;
 	private JList<String> followingList;
@@ -65,6 +66,10 @@ public class UserView extends JFrame implements Observable
 		followingList.setBounds(10, 65, 415, 145);
 		contentPane.add(followingList);
 		followingIdList = (ArrayList<String>) currentUser.getFollowingList().clone();
+		
+		creationTime = new JLabel("Creation Time:" + currentUser.getCreationTime());
+		creationTime.setBounds(230, 45, 180, 15);
+		contentPane.add(creationTime);
 	
 		for (int i = 0; i < followingIdList.size(); i++)
 		{
@@ -91,6 +96,7 @@ public class UserView extends JFrame implements Observable
 		for (int i = 0; i < newsfeed.size(); i++)
 		{
 			newsfeedListModel.addElement(newsfeed.get(i));
+			
 		}
 
 		followingScrollPane = new JScrollPane(followingList);
@@ -149,10 +155,12 @@ public class UserView extends JFrame implements Observable
 	{
 		public void actionPerformed(ActionEvent e)
 		{				
-			tweet = "-   " + currentUser.getId() + ": " + tweetTextField.getText();
+			//show the time of the tweet followed by the user ID and tweet
+			tweet = currentUser.getLastTimeUpdate() + " -   " + currentUser.getId() + ": " + tweetTextField.getText();
 			notifyObservers(tweet);
 			currentUser.update(tweet);
-			newsfeedListModel.addElement(tweet);;
+			newsfeedListModel.addElement(tweet);
+
 			
 			TweetTotalVisitor tweetTotal = new TweetTotalVisitor();
 			tweetTotal.accept();

@@ -8,6 +8,8 @@ public class User implements Component, Observer
 	private ArrayList<String> followerList;
 	private ArrayList<String> followingList;
 	private ArrayList<String> newsfeed;
+	private long creationTime;
+	private long lastUpdateTime;
 
 	public User(String id) 
 	{
@@ -15,6 +17,8 @@ public class User implements Component, Observer
 		followingList = new ArrayList<String>();
 		followerList = new ArrayList<String>();
 		newsfeed = new ArrayList<String>();
+		creationTime = System.currentTimeMillis();
+		lastUpdateTime = System.currentTimeMillis();
 	}
 	
 	public User getUser() 
@@ -45,6 +49,11 @@ public class User implements Component, Observer
 
 		return (ArrayList<String>) newsfeed;
 	}
+	
+	public long getCreationTime()
+	{
+		return creationTime;
+	}
 
 	@Override
 	public String getId() 
@@ -56,6 +65,12 @@ public class User implements Component, Observer
 	public void update(String string) 
 	{
 		newsfeed.add(string);
+		lastUpdateTime = System.currentTimeMillis();
+	}
+	
+	public long getLastTimeUpdate()
+	{
+		return lastUpdateTime;
 	}
 
 	
